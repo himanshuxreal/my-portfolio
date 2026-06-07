@@ -25,7 +25,7 @@ export function SystemQuests() {
         {quests.map((q) => {
           const queued = q.status === "queued";
           return (
-            <RevealChild key={q.title}>
+            <RevealChild key={q.title} className="min-w-0">
               <InteractiveCard
                 glow={!queued}
                 className={cn("group p-5", queued && "opacity-80")}
@@ -59,7 +59,12 @@ export function SystemQuests() {
                 </div>
 
                 <div className="mt-4 flex items-center gap-3">
-                  <Meter value={q.progress} variant={queued ? "aura" : "monarch"} showSheen={!queued} />
+                  <Meter
+                    value={q.progress}
+                    variant={queued ? "aura" : "monarch"}
+                    showSheen={!queued}
+                    className="min-w-0 flex-1"
+                  />
                   <span className="w-10 shrink-0 text-right font-mono text-sm text-white/80 tabular-nums">
                     {q.progress}%
                   </span>
