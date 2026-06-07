@@ -28,7 +28,10 @@
       "Bash(xargs grep -o \"2.4s linear\\\\|comet\")",
       "Bash(tasklist)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(npx eslint *)",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const r=JSON.parse\\(d\\);const m={};r.forEach\\(f=>f.messages.forEach\\(x=>{const k=x.ruleId||'\\(none\\)';m[k]=\\(m[k]||0\\)+1\\)}\\)\\);console.log\\(JSON.stringify\\(m,null,2\\)\\)}\\)\")",
+      "Bash(node -e \"const r=require\\('/tmp/lint.json'\\);const m={};r.forEach\\(f=>f.messages.forEach\\(x=>{const k=x.ruleId||'\\(none\\)';m[k]=\\(m[k]||0\\)+1;}\\)\\);console.log\\(m\\);\")"
     ]
   }
 }
