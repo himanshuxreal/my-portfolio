@@ -172,9 +172,15 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+    animation: name-gradient 7s ease-in-out infinite;
+  }
+
+  /* Ambient glow lives on the wrapper so the gradient (above) can sit directly
+     on each letter — a child's clipped-to-text gradient survives mobile
+     compositing, a parent's does not. */
+  .name-glow {
     filter: drop-shadow(0 0 28px rgba(124, 58, 237, 0.55))
       drop-shadow(0 0 60px rgba(34, 211, 238, 0.25));
-    animation: name-gradient 7s ease-in-out infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
