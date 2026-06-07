@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(npm ls *)",
+      "Bash(npm run *)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(npx next *)",
+      "Bash(curl -s -o /tmp/h5.html -w \"%{http_code}\" http://localhost:4145/)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -o /tmp/h6.html -w \"%{http_code}\" http://localhost:4147/)",
+      "Bash(curl -s -o /tmp/h7.html -w \"%{http_code}\\\\n\" http://localhost:4150/)",
+      "Bash(curl -s -X POST http://localhost:4150/api/contact -H 'Content-Type: application/json' -d '{\"name\":\"Jane Doe\",\"email\":\"jane@example.com\",\"message\":\"Hello this is a test message.\"}' -w '\\\\nHTTP %{http_code}\\\\n')",
+      "Bash(curl -s -X POST http://localhost:4150/api/contact -H 'Content-Type: application/json' -d '{\"name\":\"x\",\"email\":\"bad\",\"message\":\"short\"}' -w '\\\\nHTTP %{http_code}\\\\n')",
+      "Bash([ -f \"$f\" ])",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -sL https://api.github.com/repos/anthropics/skills/contents/skills/frontend-design)",
+      "Bash(curl *)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm search *)",
+      "Bash(npx uipro-cli *)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"dark cinematic gaming portfolio premium hunter system interface\" --design-system -p \"Shadow Monarch Portfolio\")",
+      "Bash(python3 scripts/search.py \"premium reveal animation glow hover micro-interaction\" --domain ux -n 12)",
+      "Bash(python3 scripts/search.py \"cinematic display heading premium powerful\" --domain typography -n 8)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"cinematic display heading premium powerful serif\" --domain typography -n 6)",
+      "Bash(python3 /c/Portfolio/.claude/skills/ui-ux-pro-max/scripts/search.py \"cinematic display heading premium powerful\" --domain typography -n 5)",
+      "Bash(xargs grep -o \"2.4s linear\\\\|comet\")"
+    ]
+  }
+}

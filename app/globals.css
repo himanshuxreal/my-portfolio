@@ -1,0 +1,617 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ *
+ * Shadow Monarch — global theme
+ * ------------------------------------------------------------------ */
+
+:root {
+  --void: #050505;
+  --abyss: #0a0a12;
+  --monarch: #6d28d9;
+  --monarch-deep: #4c1d95;
+  --monarch-light: #8b5cf6;
+  --monarch-glow: #a78bfa;
+  --aura: #2563eb;
+  --aura-cyan: #38bdf8;
+  --text: #f5f5f7;
+  --mist: #9a9ab0;
+}
+
+@layer base {
+  * {
+    @apply border-white/5;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  body {
+    @apply bg-void text-[#f5f5f7] font-sans antialiased;
+    background-color: var(--void);
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Honor reduced-motion globally as a safety net. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  ::selection {
+    background: rgba(139, 92, 246, 0.35);
+    color: #fff;
+  }
+
+  /* Focus visibility for keyboard users. */
+  :focus-visible {
+    outline: 2px solid var(--monarch-glow);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Custom scrollbar. */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #07070d;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--monarch-deep), var(--aura));
+    border-radius: 99px;
+    border: 2px solid #07070d;
+  }
+}
+
+@layer components {
+  /* HUD glass panel. */
+  .panel {
+    @apply relative rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md;
+    box-shadow:
+      0 24px 80px -28px rgba(0, 0, 0, 0.85),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+  }
+
+  /* Gradient-border panel via mask trick. */
+  .panel-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      140deg,
+      rgba(139, 92, 246, 0.6),
+      rgba(37, 99, 235, 0.25) 45%,
+      transparent 70%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* HUD corner brackets. */
+  .hud-corners::before,
+  .hud-corners::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: rgba(167, 139, 250, 0.7);
+    pointer-events: none;
+  }
+  .hud-corners::before {
+    top: 10px;
+    left: 10px;
+    border-top: 1.5px solid;
+    border-left: 1.5px solid;
+  }
+  .hud-corners::after {
+    bottom: 10px;
+    right: 10px;
+    border-bottom: 1.5px solid;
+    border-right: 1.5px solid;
+  }
+
+  .text-gradient {
+    @apply bg-monarch-gradient bg-clip-text text-transparent;
+  }
+
+  /* ---- Refined glow text system (lighter, no heavy static blur) ---- */
+
+  /* Subtle glow for inline text. */
+  .glow-text {
+    text-shadow: 0 0 18px rgba(124, 58, 237, 0.45);
+  }
+
+  /* Medium glow for section headings — restrained, premium. */
+  .glow-text-md {
+    text-shadow:
+      0 0 16px rgba(155, 108, 255, 0.4),
+      0 0 38px rgba(37, 99, 235, 0.22);
+  }
+
+  /* ---- Animated hero name: flowing gradient + living glow ---- */
+  .name-animated {
+    background: linear-gradient(
+      100deg,
+      #ffffff 0%,
+      #B794FF 18%,
+      #9B6CFF 34%,
+      #60A5FA 50%,
+      #22D3EE 64%,
+      #9B6CFF 82%,
+      #ffffff 100%
+    );
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter: drop-shadow(0 0 28px rgba(124, 58, 237, 0.55))
+      drop-shadow(0 0 60px rgba(34, 211, 238, 0.25));
+    animation: name-gradient 7s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .name-animated {
+      animation: none;
+    }
+  }
+
+  /* Soft radial glow used as an ambient orb / ground light. */
+  .glow-orb {
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.3), transparent 65%);
+    filter: blur(8px);
+  }
+
+  /* Stronger orb for hero / featured areas. */
+  .glow-orb-lg {
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.32), rgba(34, 211, 238, 0.14), transparent 70%);
+    filter: blur(16px);
+  }
+
+  /* HUD label — small, tracked, technical. */
+  .hud-label {
+    @apply font-hud text-[11px] font-semibold uppercase tracking-[0.34em] text-monarch-glow;
+    text-shadow: 0 0 12px rgba(139, 92, 246, 0.35);
+  }
+
+  /* Numeric / data label using Space Grotesk. */
+  .data-label {
+    @apply font-mono text-xs font-medium tracking-wide text-mist;
+  }
+
+  /* ---- Reactive card system ---- */
+  .card-fx {
+    position: relative;
+  }
+
+  /* Cursor-tracking spotlight (driven by --mx / --my set in JS). */
+  .card-fx__spot {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      480px circle at var(--mx, 50%) var(--my, 0%),
+      rgba(139, 92, 246, 0.2),
+      rgba(56, 189, 248, 0.06),
+      transparent 62%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .card-fx:hover .card-fx__spot {
+    opacity: 1;
+  }
+
+  /* Energy comet that loops the card edge on hover — comet head + tail + a
+     faint persistent full-border glow so the whole edge reads clearly. */
+  .card-fx__border {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background:
+      conic-gradient(
+        from var(--angle, 0deg),
+        transparent 0deg,
+        rgba(124, 58, 237, 0) 250deg,
+        rgba(124, 58, 237, 0.5) 300deg,
+        rgba(155, 108, 255, 0.95) 338deg,
+        rgba(34, 211, 238, 1) 354deg,
+        #ffffff 360deg
+      ),
+      linear-gradient(
+        var(--angle, 0deg),
+        rgba(124, 58, 237, 0.3),
+        rgba(34, 211, 238, 0.22)
+      );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .card-fx:hover .card-fx__border {
+    opacity: 1;
+    animation: border-rotate 3s linear infinite;
+  }
+
+  /* One-shot scanning sweep on enter. */
+  .card-fx__scan {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .card-fx__scan::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 32%,
+      rgba(167, 139, 250, 0.1) 48%,
+      rgba(56, 189, 248, 0.16) 50%,
+      transparent 68%
+    );
+    transform: translateX(-120%);
+  }
+  .card-fx:hover .card-fx__scan::before {
+    animation: card-scan-sweep 0.9s ease;
+  }
+
+  /* ---- Premium button energy border (Linear / Framer / Stripe style) ----
+     Two layers form a comet-with-tail that loops the border:
+     ::before — a soft, blurred glow comet (the trail + bloom).
+     ::after  — a sharp bright comet head riding on top for definition.
+     A persistent faint full-border glow underneath lights the whole edge so the
+     effect reads clearly the instant you hover. */
+
+  .btn-energy {
+    position: relative;
+    overflow: visible;
+  }
+
+  /* Persistent soft full-border glow (fades in on hover, stays lit). */
+  .btn-energy::before {
+    content: "";
+    position: absolute;
+    inset: -1.5px;
+    border-radius: inherit;
+    padding: 1.5px;
+    background:
+      /* the travelling comet — wide bright arc with a fading tail */
+      conic-gradient(
+        from var(--btn-angle, 0deg),
+        transparent 0deg,
+        rgba(124, 58, 237, 0) 250deg,
+        rgba(124, 58, 237, 0.45) 300deg,
+        rgba(155, 108, 255, 0.95) 340deg,
+        rgba(34, 211, 238, 1) 356deg,
+        #ffffff 360deg
+      ),
+      /* faint full-border base glow so the whole edge is visible */
+      linear-gradient(
+        var(--btn-angle, 0deg),
+        rgba(124, 58, 237, 0.35),
+        rgba(34, 211, 238, 0.25)
+      );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    filter: blur(2.5px);
+  }
+
+  /* Sharp bright comet head on top of the bloom. */
+  .btn-energy::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: conic-gradient(
+      from var(--btn-angle, 0deg),
+      transparent 0deg,
+      transparent 320deg,
+      rgba(196, 181, 253, 0.9) 344deg,
+      #ffffff 356deg,
+      rgba(196, 181, 253, 0.9) 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+
+  /* Activated by real CSS hover OR a JS-latched data-hovered flag. The JS flag
+     is essential: magnetic buttons get a transform that can drop :hover, so we
+     latch the state on pointerenter/leave to guarantee the trace always fires. */
+  .btn-energy:hover::before,
+  .btn-energy:hover::after,
+  .btn-energy[data-hovered="true"]::before,
+  .btn-energy[data-hovered="true"]::after {
+    opacity: 1;
+    animation: btn-energy-rotate 2.4s linear infinite;
+  }
+
+  /* Full-border glow variant — the entire border illuminates softly. */
+  .btn-energy-full::before {
+    inset: -1.5px;
+    padding: 1.5px;
+    background: linear-gradient(
+      135deg,
+      rgba(167, 139, 250, 0.7),
+      rgba(56, 189, 248, 0.5),
+      rgba(109, 40, 217, 0.7),
+      rgba(167, 139, 250, 0.7)
+    );
+    filter: blur(6px);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .btn-energy-full::after {
+    inset: -1px;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(167, 139, 250, 0.9),
+      rgba(56, 189, 248, 0.7),
+      rgba(109, 40, 217, 0.9)
+    );
+    filter: blur(0px);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .btn-energy-full:hover::before,
+  .btn-energy-full:hover::after {
+    opacity: 1;
+    animation: none;
+  }
+
+  /* ---- Navbar item: cursor-reactive light + border trace ---- */
+
+  /* Radial light that follows the cursor inside a nav item (driven by --nx/--ny). */
+  .nav-item__light {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      60px circle at var(--nx, 50%) var(--ny, 50%),
+      rgba(155, 108, 255, 0.35),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .nav-item:hover .nav-item__light {
+    opacity: 1;
+  }
+
+  /* Per-item border trace — a glowing comet that loops the border on hover. */
+  .nav-item__trace {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background:
+      conic-gradient(
+        from var(--btn-angle, 0deg),
+        transparent 0deg,
+        rgba(124, 58, 237, 0) 270deg,
+        rgba(155, 108, 255, 0.9) 330deg,
+        rgba(34, 211, 238, 1) 352deg,
+        #ffffff 360deg
+      ),
+      linear-gradient(rgba(124, 58, 237, 0.3), rgba(34, 211, 238, 0.2));
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    filter: blur(0.4px);
+  }
+  .nav-item:hover .nav-item__trace {
+    opacity: 1;
+    animation: btn-energy-rotate 2.2s linear infinite;
+  }
+
+  /* Text that brightens + glows on hover. */
+  .nav-text {
+    transition: color 0.25s ease, text-shadow 0.25s ease;
+  }
+  .nav-item:hover .nav-text {
+    color: #fff;
+    text-shadow: 0 0 14px rgba(155, 108, 255, 0.7);
+  }
+
+  /* ---- Cinematic section transition dividers ---- */
+
+  /* A soft aura glow that bridges two sections (placed at a section seam). */
+  .section-seam {
+    position: absolute;
+    inset-inline: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(124, 58, 237, 0.5) 30%,
+      rgba(34, 211, 238, 0.4) 50%,
+      rgba(124, 58, 237, 0.5) 70%,
+      transparent
+    );
+  }
+}
+
+@layer utilities {
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  }
+  .mask-fade-y {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+  }
+  .perspective {
+    perspective: 1200px;
+  }
+  /* Premium glass surface. */
+  .glass {
+    background: rgba(255, 255, 255, 0.035);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+  }
+  /* Soft bloom shadow for floating elements. */
+  .bloom {
+    box-shadow: 0 0 50px -10px rgba(139, 92, 246, 0.45), 0 0 90px -30px rgba(56, 189, 248, 0.3);
+  }
+  /* Top reflective sheen line. */
+  .reflect-top {
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  }
+  /* Elevated card lift — subtle 3D rise. */
+  .card-lift {
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+  }
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 20px 48px -12px rgba(0, 0, 0, 0.7),
+      0 0 36px -4px rgba(139, 92, 246, 0.25);
+  }
+}
+
+/* Animatable angle for flowing borders (graceful fallback if unsupported). */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --btn-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes border-rotate {
+  to {
+    --angle: 360deg;
+  }
+}
+
+@keyframes btn-energy-rotate {
+  to {
+    --btn-angle: 360deg;
+  }
+}
+
+@keyframes card-scan-sweep {
+  to {
+    transform: translateX(120%);
+  }
+}
+
+/* Slow ambient pulse for aura elements. */
+@keyframes aura-breathe {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.06);
+  }
+}
+
+/* Flowing gradient for the animated hero name. */
+@keyframes name-gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Shimmer sweep used on power/XP bars. */
+.bar-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: shimmer 2.4s ease-in-out infinite;
+}
+
+/* Custom cursor: hide the native pointer only on fine-pointer devices. */
+@media (hover: hover) and (pointer: fine) {
+  body.monarch-cursor,
+  body.monarch-cursor * {
+    cursor: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar-sheen {
+    display: none;
+  }
+  .border-flow:hover::after {
+    animation: none;
+  }
+  .card-scan:hover::after {
+    animation: none;
+  }
+}
