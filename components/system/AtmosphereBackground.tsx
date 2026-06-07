@@ -1,7 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import { usePrefersReducedMotion } from "@/lib/hooks";
 
 /**
@@ -9,7 +8,6 @@ import { usePrefersReducedMotion } from "@/lib/hooks";
  *   1. Deep-space radial wash (monarch purple + aura blue gradients)
  *   2. Custom artwork slot with parallax (uncomment when artwork is provided)
  *   3. Drifting fog blobs (larger, more numerous)
- *   4. Volumetric light rays from top-right
  *   5. Rising energy streaks (shadow particles)
  *   6. Floating ember motes
  *   7. Fine grain texture (kills banding)
@@ -20,12 +18,9 @@ import { usePrefersReducedMotion } from "@/lib/hooks";
  */
 export function AtmosphereBackground() {
   const reduce = usePrefersReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref });
-  const parallaxY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-20 overflow-hidden bg-void" ref={ref}>
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-20 overflow-hidden bg-void">
       {/* 1. Base deep-space wash — richer, more layered */}
       <div
         className="absolute inset-0"
@@ -99,20 +94,6 @@ export function AtmosphereBackground() {
           transition={{ duration: f.d, repeat: Infinity, ease: "easeInOut" }}
         />
       ))}
-
-      {/* 4. Volumetric light rays — stronger, with slight parallax */}
-      <motion.div
-        className="absolute inset-0 opacity-[0.5] mix-blend-screen"
-        style={{
-          background:
-            "conic-gradient(from 210deg at 85% -5%, transparent 0deg, rgba(167,139,250,0.12) 7deg, transparent 14deg, rgba(56,189,248,0.09) 20deg, transparent 28deg, rgba(167,139,250,0.07) 33deg, transparent 40deg)",
-          maskImage:
-            "radial-gradient(120% 90% at 85% 0%, #000 0%, transparent 72%)",
-          WebkitMaskImage:
-            "radial-gradient(120% 90% at 85% 0%, #000 0%, transparent 72%)",
-          y: parallaxY,
-        }}
-      />
 
       {/* 5. Rising energy streaks — shadow particles */}
       {!reduce && (
