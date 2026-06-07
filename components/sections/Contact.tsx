@@ -6,13 +6,33 @@ import { Reveal } from "@/components/system/Reveal";
 import { InteractiveCard } from "@/components/system/InteractiveCard";
 import { ContactForm } from "./ContactForm";
 import { profile } from "@/data/portfolio";
+import { openEmailCompose, buildMailto } from "@/lib/email";
 
-const gmailCompose = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-  profile.email
-)}&su=${encodeURIComponent("Hello Himanshu — from your portfolio")}`;
+const EMAIL_SUBJECT = "Hello Himanshu — from your portfolio";
 
-const channels = [
-  { icon: Mail, label: "Email", value: profile.email, href: gmailCompose, external: true },
+type Channel = {
+  icon: typeof Mail;
+  label: string;
+  value: string;
+  href: string | null;
+  external: boolean;
+  onClick?: (e: React.MouseEvent) => void;
+};
+
+const channels: Channel[] = [
+  {
+    icon: Mail,
+    label: "Email",
+    value: profile.email,
+    // mailto href keeps it working without JS and on mobile (opens the Gmail
+    // app); the click handler routes desktop to Gmail web compose instead.
+    href: buildMailto(profile.email, EMAIL_SUBJECT, ""),
+    external: false,
+    onClick: (e) => {
+      e.preventDefault();
+      openEmailCompose(profile.email, EMAIL_SUBJECT, "");
+    },
+  },
   { icon: Github, label: "GitHub", value: "@himanshuxreal", href: profile.github, external: true },
   { icon: Linkedin, label: "LinkedIn", value: "Himanshu", href: profile.linkedin, external: true },
   { icon: MapPin, label: "Location", value: profile.location, href: null, external: false },
@@ -74,6 +94,7 @@ export function Contact() {
                       <a
                         href={c.href}
                         data-cursor
+                        onClick={c.onClick}
                         {...(c.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                         className={`btn-energy ${cls} cursor-pointer hover:-translate-y-0.5 hover:border-monarch/50 hover:bg-white/[0.04] hover:shadow-glow`}
                       >

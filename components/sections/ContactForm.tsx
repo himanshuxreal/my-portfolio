@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Send, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { profile } from "@/data/portfolio";
 import { cn } from "@/lib/utils";
+import { openEmailCompose } from "@/lib/email";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 
 type Status = "idle" | "loading" | "success" | "error";
@@ -27,16 +28,12 @@ export function ContactForm() {
     return Object.keys(e).length === 0;
   };
 
-  const mailtoFallback = () => {
-    const subject = encodeURIComponent(`Portfolio message from ${form.name}`);
-    const bodyText = encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`);
-    // Open Gmail's web compose in a new tab — reliable even when no desktop
-    // mail client is configured. Falls back to mailto: as a last resort.
-    const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-      profile.email
-    )}&su=${subject}&body=${bodyText}`;
-    const win = window.open(gmail, "_blank", "noopener,noreferrer");
-    if (!win) window.location.href = `mailto:${profile.email}?subject=${subject}&body=${bodyText}`;
+  const composeEmail = () => {
+    // Hands off to the Gmail app on mobile (mailto) or Gmail web on desktop,
+    // with the user's name, email, and message pre-filled.
+    const subject = `Portfolio message from ${form.name}`;
+    const body = `${form.message}\n\n— ${form.name} (${form.email})`;
+    openEmailCompose(profile.email, subject, body);
   };
 
   const onSubmit = async (ev: React.FormEvent) => {
@@ -61,8 +58,8 @@ export function ContactForm() {
       }
       if (data.code === "NO_PROVIDER") {
         // Email backend not configured — never lose the message.
-        setServerMsg("Opening Gmail with your message…");
-        mailtoFallback();
+        setServerMsg("Opening your email app with the message…");
+        composeEmail();
         setStatus("idle");
         return;
       }
