@@ -69,7 +69,7 @@ export function Hero() {
         variants={container}
         initial={initial}
         animate="show"
-        className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center text-center"
+        className="relative z-20 mx-auto flex w-full max-w-4xl flex-col items-center text-center"
       >
         {/* System status line — pill on mobile for a designed feel */}
         <motion.div
@@ -97,10 +97,13 @@ export function Hero() {
           </span>
         </motion.div>
 
-        {/* NAME — animated, flowing gradient, the dominant focal point */}
+        {/* NAME — animated, flowing gradient, the dominant focal point.
+            Fluid size floored low enough to never clip at 320px; relaxed
+            line-height on mobile so tall ascenders aren't cut, tightening up
+            from sm. */}
         <AnimatedName
           text={profile.name}
-          className="font-display text-[clamp(3rem,14vw,11rem)] font-extrabold leading-[0.9] tracking-tight"
+          className="w-full max-w-full px-2 font-display text-[clamp(2.75rem,12vw,11rem)] font-extrabold leading-[1.08] tracking-tight sm:leading-[0.95] md:leading-[0.9]"
         />
 
         {/* Title */}
