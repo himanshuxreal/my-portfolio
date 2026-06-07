@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature]
   pull_request:
-    branches: [main]
+    branches: [main, feature]
 
 # Cancel in-progress runs for the same ref to save CI minutes
 concurrency:
