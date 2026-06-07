@@ -17,7 +17,9 @@ export function AnimatedName({ text, className }: { text: string; className?: st
   if (reduce) {
     return (
       <h1 className={className}>
-        <span className="name-animated">{text}</span>
+        <span className="name-animated inline-block max-w-full overflow-visible py-[0.08em]">
+          {text}
+        </span>
       </h1>
     );
   }
@@ -45,7 +47,7 @@ export function AnimatedName({ text, className }: { text: string; className?: st
       animate="show"
       style={{ perspective: 800 }}
     >
-      <span className="name-animated inline-flex">
+      <span className="name-animated inline-flex max-w-full justify-center overflow-visible py-[0.08em]">
         {letters.map((c, i) => (
           <motion.span
             key={i}
