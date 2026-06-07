@@ -1,7 +1,11 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { usePrefersReducedMotion } from "@/lib/hooks";
+import { useMounted, usePrefersReducedMotion } from "@/lib/hooks";
+
+/** Fixed horizontal positions for the rising energy streaks. */
+const STREAK_LEFTS = [12, 25, 38, 52, 65, 78, 90];
 
 /**
  * Layered atmospheric environment — depth-first:
@@ -18,6 +22,35 @@ import { usePrefersReducedMotion } from "@/lib/hooks";
  */
 export function AtmosphereBackground() {
   const reduce = usePrefersReducedMotion();
+  const mounted = useMounted();
+
+  // Randomized particle parameters are generated once and only rendered after
+  // mount. Server and first client render emit identical markup (no particles),
+  // so there is no hydration mismatch; the motes/streaks fade in post-hydration.
+  const streaks = useMemo(
+    () =>
+      STREAK_LEFTS.map((left, i) => ({
+        left,
+        i,
+        width: 0.8 + Math.random() * 0.6,
+        height: 28 + Math.random() * 35,
+      })),
+    []
+  );
+
+  const embers = useMemo(
+    () =>
+      Array.from({ length: 18 }).map((_, i) => ({
+        i,
+        left: 10 + Math.random() * 80,
+        top: 10 + Math.random() * 80,
+        riseY: -40 - Math.random() * 30,
+        driftX: (Math.random() - 0.5) * 30,
+        peakOpacity: 0.7 + Math.random() * 0.3,
+        duration: 4 + Math.random() * 6,
+      })),
+    []
+  );
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-20 overflow-hidden bg-void">
@@ -95,17 +128,17 @@ export function AtmosphereBackground() {
         />
       ))}
 
-      {/* 5. Rising energy streaks — shadow particles */}
-      {!reduce && (
+      {/* 5. Rising energy streaks — shadow particles (client-only, post-mount) */}
+      {mounted && !reduce && (
         <div className="absolute inset-0">
-          {[12, 25, 38, 52, 65, 78, 90].map((left, i) => (
+          {streaks.map(({ left, i, width, height }) => (
             <motion.span
               key={left}
               className="absolute bottom-[-10%]"
               style={{
                 left: `${left}%`,
-                width: `${0.8 + Math.random() * 0.6}px`,
-                height: `${28 + Math.random() * 35}%`,
+                width: `${width}px`,
+                height: `${height}%`,
                 background:
                   i % 2 === 0
                     ? "linear-gradient(to top, transparent, rgba(167,139,250,0.55), transparent)"
@@ -126,26 +159,26 @@ export function AtmosphereBackground() {
         </div>
       )}
 
-      {/* 6. Floating ember motes — tiny drifting lights */}
-      {!reduce && (
+      {/* 6. Floating ember motes — tiny drifting lights (client-only, post-mount) */}
+      {mounted && !reduce && (
         <div className="absolute inset-0">
-          {Array.from({ length: 18 }).map((_, i) => (
+          {embers.map(({ i, left, top, riseY, driftX, peakOpacity, duration }) => (
             <motion.span
               key={`ember-${i}`}
               className="absolute h-0.5 w-0.5 rounded-full"
               style={{
-                left: `${10 + Math.random() * 80}%`,
-                top: `${10 + Math.random() * 80}%`,
+                left: `${left}%`,
+                top: `${top}%`,
                 background: i % 3 === 0 ? "#A78BFA" : i % 3 === 1 ? "#38BDF8" : "#C4B5FD",
               }}
               animate={{
-                y: [0, -40 - Math.random() * 30, 0],
-                x: [0, (Math.random() - 0.5) * 30, 0],
-                opacity: [0, 0.7 + Math.random() * 0.3, 0],
+                y: [0, riseY, 0],
+                x: [0, driftX, 0],
+                opacity: [0, peakOpacity, 0],
                 scale: [0.4, 1.4, 0.4],
               }}
               transition={{
-                duration: 4 + Math.random() * 6,
+                duration,
                 repeat: Infinity,
                 ease: "easeInOut",
                 delay: i * 0.7,
