@@ -17,7 +17,7 @@ export function AnimatedName({ text, className }: { text: string; className?: st
   if (reduce) {
     return (
       <h1 className={className}>
-        <span className="name-animated inline-block max-w-full overflow-visible py-[0.08em]">
+        <span className="name-animated name-glow inline-block max-w-full overflow-visible py-[0.08em]">
           {text}
         </span>
       </h1>
@@ -47,7 +47,7 @@ export function AnimatedName({ text, className }: { text: string; className?: st
       animate="show"
       style={{ perspective: 800 }}
     >
-      <span className="name-animated inline-flex max-w-full justify-center overflow-visible py-[0.08em]">
+      <span className="name-glow inline-flex max-w-full justify-center overflow-visible py-[0.08em]">
         {letters.map((c, i) => (
           <motion.span
             key={i}
@@ -55,8 +55,14 @@ export function AnimatedName({ text, className }: { text: string; className?: st
             className="inline-block will-change-transform"
             style={{ transformStyle: "preserve-3d" }}
           >
+            {/* Gradient + background-clip sits on the glyph element itself so
+                it paints even when this letter is composited to its own layer
+                on mobile (the float/3D transforms force that). The negative
+                per-letter delay phases the flow so colours travel across the
+                word instead of shifting in unison. */}
             <motion.span
-              className="inline-block"
+              className="name-animated inline-block"
+              style={{ animationDelay: `${-i * 0.18}s` }}
               animate={{ y: [0, -6, 0] }}
               transition={{
                 duration: 3.5 + (i % 3) * 0.6,
